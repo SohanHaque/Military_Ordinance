@@ -1,0 +1,14 @@
+[
+  {
+    "id": "1",
+    "name": "72 Infantry Brigade",
+    "size": 500,
+    "officers": 20
+  },
+  {
+    "id": "3",
+    "name": "16 Infantry Brigade",
+    "size": 450,
+    "officers": 18
+  }
+]
