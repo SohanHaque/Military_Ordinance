@@ -3,6 +3,11 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { UnitModule } from './unit/unit.module';
 import { Unit } from './unit/unit.entity';
 import { WeaponModule } from './Weapon/weapon.module';
+import { Weapon } from './Weapon/weapon.entity';
+import { Weapon_inventory } from './Weapon/weapon_inventory.entity';
+import { Officers } from './unit/officers.entity';
+import { Drills } from './Drills/drills.entity';
+import { DrillsModule } from './Drills/drills.module';
 
 @Module({
   imports: [
@@ -13,10 +18,10 @@ import { WeaponModule } from './Weapon/weapon.module';
       username: 'postgres',
       password: 'new_password',
       database: 'storage',
-      entities: [Unit],
+      entities: [Unit,Weapon,Weapon_inventory,Officers,Drills ],
       synchronize: true,
     }),
-    UnitModule, WeaponModule,
+    UnitModule, WeaponModule,DrillsModule,
   ],
 })
 export class AppModule {}

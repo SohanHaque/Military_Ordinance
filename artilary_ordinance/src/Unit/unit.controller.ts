@@ -1,6 +1,8 @@
 import { Controller, Get, Post, Put, Patch, Delete, Body, Param, Query, UsePipes, ValidationPipe, HttpException, HttpStatus } from '@nestjs/common';
 import { UnitService } from './unit.service';
 import { Unit } from './unit.entity';
+import { Officers } from './officers.entity';
+import { OfficersDto } from './officers.dto';
 
 @Controller('units')
 export class UnitController {
@@ -44,5 +46,26 @@ export class UnitController {
     @Delete(':id')
     async delete(@Param('id') id: number): Promise<void> {
         await this.unitService.disbandUnit(id);
+    }
+
+    //for officers
+    @Post('officers')
+    @UsePipes(new ValidationPipe())
+    async addOfficer(@Body() officersDto: OfficersDto): Promise<Officers> {
+        try {
+            return await this.unitService.addOfficer(officersDto);
+        } catch (error) {
+            throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
+        }
+    }
+
+   @Get('officers')
+    async findAllOfficers(): Promise<Officers[]> {
+        return await this.unitService.findAllOfficers();
+    }
+
+    @Get('officer/:id')
+    async findOfficerById(@Param('id') id: number): Promise<Officers> {
+        return await this.unitService.findOfficerById(id);
     }
 }

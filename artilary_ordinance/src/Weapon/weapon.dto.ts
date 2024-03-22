@@ -1,4 +1,4 @@
-import { IsString, Length, IsNotEmpty, IsOptional } from 'class-validator';
+import { IsString, Length, IsNotEmpty, IsOptional, IsInt, Min } from 'class-validator';
 
 export class WeaponDto {
     @IsString()
@@ -8,6 +8,10 @@ export class WeaponDto {
     @IsString()
     @IsNotEmpty({ message: 'Type must not be empty' })
     readonly type: string;
+
+    @IsInt()
+    @Min(0)
+    quantity: number;
 
     @IsString()
     @IsNotEmpty({ message: 'Country must not be empty' })

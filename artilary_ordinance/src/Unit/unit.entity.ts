@@ -1,20 +1,21 @@
-import { Entity, PrimaryGeneratedColumn, Column, BeforeInsert } from 'typeorm';
+// unit.entity.ts
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany, OneToOne } from 'typeorm';
+import { Officers } from './officers.entity';
+import { Weapon_inventory } from '../Weapon/weapon_inventory.entity';
 
 @Entity()
 export class Unit {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column({ length: 100, unique: true })
+    @Column({ length: 100 })
     name: string;
 
     @Column()
     size: number;
 
-    @Column()
-    officers: number;
 
-    @Column()
+    @Column({ unique: true }) 
     email: string;
 
     @Column()
@@ -26,8 +27,8 @@ export class Unit {
     @Column({ nullable: true })
     uploadedFile: string;
 
-    @BeforeInsert()
-    generateId() {
-        this.id = this.id * 100 + 24;
-    }
+    @OneToOne(() => Officers, officer => officer.unit)
+    officeres: Officers[]; // Renamed from 'officers'
+    // @OneToMany(() => Weapon_inventory, inventory => inventory.unit)
+    // inventories: Weapon_inventory[];
 }

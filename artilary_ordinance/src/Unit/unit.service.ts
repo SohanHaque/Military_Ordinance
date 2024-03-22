@@ -2,12 +2,16 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, ILike } from 'typeorm';
 import { Unit } from './unit.entity';
+import { OfficersDto } from './officers.dto';
+import { Officers } from './officers.entity';
 
 @Injectable()
 export class UnitService {
     constructor(
         @InjectRepository(Unit)
         private unitRepository: Repository<Unit>,
+        @InjectRepository(Officers)
+        private readonly officersRepository: Repository<Officers>,
     ) {}
 
     async findAll(): Promise<Unit[]> {
@@ -42,5 +46,36 @@ export class UnitService {
 
     async searchByName(name: string): Promise<Unit[]> {
         return await this.unitRepository.find({ where: { name: ILike(`%${name}%`) } });
+    }
+    //officers
+   
+
+    async addOfficer(officersDto: OfficersDto): Promise<Officers> {
+        const { name, rank, unit_Id } = officersDto;
+        
+        // Find the unit by its ID
+        const unit = await this.unitRepository.findOne({ where: { id: unit_Id } });
+        
+        if (!unit) {
+            throw new NotFoundException(`Unit with ID ${unit_Id} not found`);
+        }
+        
+        // Create the officer entity and associate it with the found unit
+        const officer = this.officersRepository.create({ name, rank, unit });
+        
+        // Save the officer entity
+        return await this.officersRepository.save(officer);
+    }
+    
+    async findAllOfficers(): Promise<Officers[]> {
+        return await this.officersRepository.find();
+    }
+
+    async findOfficerById(id: number): Promise<Officers> {
+        const officer = await this.officersRepository.findOne({ where: { id: id } });
+        if (!officer) {
+            throw new NotFoundException(`Officer with ID ${id} not found`);
+        }
+        return officer;
     }
 }
