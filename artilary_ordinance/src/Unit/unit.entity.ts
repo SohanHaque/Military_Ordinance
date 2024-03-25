@@ -28,7 +28,5 @@ export class Unit {
     uploadedFile: string;
 
     @OneToOne(() => Officers, officer => officer.unit)
-    officeres: Officers[]; // Renamed from 'officers'
-    // @OneToMany(() => Weapon_inventory, inventory => inventory.unit)
-    // inventories: Weapon_inventory[];
+    officeres: Officers[];
 }

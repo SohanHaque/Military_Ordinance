@@ -4,6 +4,8 @@ import { Repository, ILike } from 'typeorm';
 import { Unit } from './unit.entity';
 import { OfficersDto } from './officers.dto';
 import { Officers } from './officers.entity';
+import { LoginDTO } from './login.dto';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UnitService {
@@ -14,6 +16,22 @@ export class UnitService {
         private readonly officersRepository: Repository<Officers>,
     ) {}
 
+    async login(loginDTO: LoginDTO): Promise<Unit | null> {
+        const { email, password } = loginDTO;
+        const unit = await this.unitRepository.findOne({ where: { email } });
+        
+        if (!unit) {
+            return null; // Unit not found with given email
+        }
+
+        const isPasswordValid = await bcrypt.compare(password, unit.password);
+        
+        if (!isPasswordValid) {
+            return null; // Invalid password
+        }
+
+        return unit; // Login successful
+    }
     async findAll(): Promise<Unit[]> {
         return await this.unitRepository.find();
     }
@@ -27,6 +45,9 @@ export class UnitService {
     }
 
     async addUnit(unit: Unit): Promise<Unit> {
+        // Hash the password before saving
+        const hashedPassword = await bcrypt.hash(unit.password, 10);
+        unit.password = hashedPassword;
         return await this.unitRepository.save(unit);
     }
 

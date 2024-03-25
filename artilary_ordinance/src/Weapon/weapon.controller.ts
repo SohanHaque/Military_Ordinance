@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Put, Patch, Delete, Body, Param, Query, UsePipes, ValidationPipe, HttpException, HttpStatus, NotFoundException, UseInterceptors, UploadedFile, Res } from '@nestjs/common';
+import { Controller, Get, Post, Put, Patch, Delete, Body, Param, Query, UsePipes, ValidationPipe, HttpException, HttpStatus, NotFoundException, UseInterceptors, UploadedFile, Res, UseGuards } from '@nestjs/common';
 import { WeaponService } from './weapon.service';
 import { Weapon } from './weapon.entity';
 import { WeaponDto } from './weapon.dto';
@@ -7,6 +7,7 @@ import { Weapon_inventory } from './Weapon_inventory.entity';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { extname } from 'path';
+import { SessionGuard } from '../unit/session.guard';
 
 @Controller('weapons')
 export class WeaponController {
@@ -76,6 +77,7 @@ async uploadPdf(
 }
 
 @Get(':id/pdf')
+@UseGuards(SessionGuard)
 async downloadPdf(@Param('id') weaponId: number, @Res() res: any): Promise<void> {
     try {
         const pdfPath = await this.weaponService.getPdfFilePath(weaponId);
